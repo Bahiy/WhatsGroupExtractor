@@ -1,7 +1,6 @@
 import json
 import os
 import time
-from time import sleep
 
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
@@ -90,7 +89,7 @@ def group_access(driver):
         print('Erro ao encontrar o Botão do grupo: ', e)
 
 
-def scroll_div_dynamically(driver, div_xpath, element_xpath, scroll_increment=80):
+def scroll_div_dynamically(driver, div_xpath, element_xpath, scroll_increment=150):
     """
     Função para rolar uma div dinamicamente com base nos elementos que aparecem.
 
@@ -143,7 +142,7 @@ def scrape_number(driver):
     contacts = []
     group_access(driver)
     get_member_list(driver)
-    sleep(20)
+
     while True:
         elements = driver.find_elements(By.XPATH,
                                         "//div[contains(@style, 'pointer-events: auto;')]//span[contains(@title, '+55')]")
@@ -159,6 +158,7 @@ def scrape_number(driver):
             contacts.append(element.text)
             print('Contato a ser adicionado: ', element.text)
 
+
 def main():
     # Initialize the driver
     profile_path = os.path.join(os.getcwd(), "chrome_profile")
@@ -166,14 +166,14 @@ def main():
         os.makedirs(profile_path)
 
     options = uc.ChromeOptions()
-    # options.add_argument("--headless=new")
+    options.add_argument("--headless=new")
     options.add_argument(argument='--no-sandbox')
     options.add_argument(argument='--disable-dev-shm-usage')
     options.add_argument(argument='--lang=pt-BR')
     options.add_argument(argument=f'--user-data-dir={profile_path}')
 
     # Create the driver
-    driver = uc.Chrome(options=options, version_main=129)
+    driver = uc.Chrome(options=options, version_main=131)
 
     driver.maximize_window()
 
