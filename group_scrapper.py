@@ -90,16 +90,6 @@ def group_access(driver):
 
 
 def scroll_div_dynamically(driver, div_xpath, element_xpath, scroll_increment=150):
-    """
-    Função para rolar uma div dinamicamente com base nos elementos que aparecem.
-
-    :param driver: Instância do Selenium WebDriver.
-    :param div_xpath: XPath da div a ser rolada.
-    :param element_xpath: XPath dos elementos que são carregados dentro da div.
-    :param Número de elementos após o qual o scroll deve ser feito.
-    :param scroll_increment: Quantidade de pixels a ser rolada a cada vez.
-    :param scroll_pause_time: Tempo (em segundos) para pausar entre cada rolagem.
-    """
     # Obtém a referência da div que será rolada
     div = driver.find_element(By.XPATH, div_xpath)
 
@@ -111,13 +101,13 @@ def scroll_div_dynamically(driver, div_xpath, element_xpath, scroll_increment=15
         elements = div.find_elements(By.XPATH, element_xpath)
         current_elements_count = len(elements)
 
-        # Se o número de elementos aumentou e atingimos a quantidade esperada, faça o scroll
+        # Se a composição aumentou e atingimos a quantidade esperada, faça a rolagem
         if current_elements_count >= last_elements_count:
             # Rolar a div de forma incremental
             driver.execute_script(f"arguments[0].scrollTop += {scroll_increment};", div)
             print(f"Rolando a div, número de elementos encontrados: {current_elements_count}")
 
-        # Se o número de elementos não aumentar, significa que não há mais nada a carregar
+        # Se a composição não aumentar, significa que não há mais nada a carregar
         if current_elements_count == last_elements_count:
             print("Não há mais elementos a carregar.")
             break
