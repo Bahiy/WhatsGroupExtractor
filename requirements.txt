@@ -1,6 +1,4 @@
 selenium==4.25.0
-undetected_chromedriver==3.5.5
-vobject==0.9.8
 
-PyAutoGUI~=0.9.54
 undetected-chromedriver~=3.5.5
+Flask~=3.1.0

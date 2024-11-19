@@ -83,7 +83,7 @@ def group_access(driver):
         if wait_element(driver, xpath="//button//div//div[contains(text(), 'Grupos')]", timeout=1, click=True):
             print_dev_mode("Encontrou botão de grupo")
             # Clica no grupo desejado
-            wait_element(driver, xpath="//span[contains(text(),'PROMO 42')]", click=True)
+            wait_element(driver, xpath="//span[contains(text(),'DEPARTAMENTO CONTÁBIL')]", click=True)
             print_dev_mode("Encontrou Grupo")
     except Exception as e:
         print('Erro ao encontrar o Botão do grupo: ', e)
@@ -95,13 +95,12 @@ def scroll_div_dynamically(driver, div_xpath, element_xpath, scroll_increment=15
 
     # Inicializa a contagem de elementos
     last_elements_count = 0
-
     while True:
         # Obter o número atual de elementos dentro da div
         elements = div.find_elements(By.XPATH, element_xpath)
         current_elements_count = len(elements)
 
-        # Se a composição aumentou e atingimos a quantidade esperada, faça a rolagem
+        # Se a composição aumentou e atingimos a quantidade esperada, role a div
         if current_elements_count >= last_elements_count:
             # Rolar a div de forma incremental
             driver.execute_script(f"arguments[0].scrollTop += {scroll_increment};", div)
@@ -118,7 +117,7 @@ def scroll_div_dynamically(driver, div_xpath, element_xpath, scroll_increment=15
 def get_member_list(driver):
     try:
         # Clica nos detalhes do grupo
-        wait_element(driver, xpath="//header//span[contains(text(), 'PROMO 42')]", click=True)
+        wait_element(driver, xpath="//header//span[contains(text(), 'DEPARTAMENTO')]", click=True)
         print_dev_mode("Acessou detalhes do grupo")
 
         # Acessa a lista de contatos que participam desse grupo
@@ -132,11 +131,11 @@ def scrape_number(driver):
     contacts = []
     group_access(driver)
     get_member_list(driver)
-
+    time.sleep(1)
     while True:
         elements = driver.find_elements(By.XPATH,
                                         "//div[contains(@style, 'pointer-events: auto;')]//span[contains(@title, '+55')]")
-        scroll_div_dynamically(driver, "//div[contains(@style, 'height: 61332px;')]/../../..",
+        scroll_div_dynamically(driver,  "(//div[contains(@role, 'listitem')]/../../../..)[1]",
                                "//div[contains(@style, 'pointer-events: auto;')]//span[contains(@title, '+55')]")
 
         if wait_element(driver, "//button[contains(., 'Mostrar membros anteriores')]", timeout=5):
@@ -146,6 +145,7 @@ def scrape_number(driver):
 
         for element in elements:
             contacts.append(element.text)
+            print(len(contacts))
             print('Contato a ser adicionado: ', element.text)
 
 
@@ -156,7 +156,7 @@ def main():
         os.makedirs(profile_path)
 
     options = uc.ChromeOptions()
-    options.add_argument("--headless=new")
+    # options.add_argument(argument="--headless=new")
     options.add_argument(argument='--no-sandbox')
     options.add_argument(argument='--disable-dev-shm-usage')
     options.add_argument(argument='--lang=pt-BR')
@@ -165,7 +165,6 @@ def main():
     # Create the driver
     driver = uc.Chrome(options=options, version_main=131)
 
-    driver.maximize_window()
 
     # Access WhatsApp Web
     driver.get(url='https://web.whatsapp.com/')
